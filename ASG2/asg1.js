@@ -148,10 +148,10 @@ function onChangeRotate(value){
     let z_bool = document.getElementById("z").checked;
     var cyl = cylinders[index-1];
     if(x_bool){
-        cyl.setRotate(value,0,0);
+        cyl.setRotate(value,cyl.rotate[1],cyl.rotate[2]);
     }
     if(y_bool){
-        cyl.setRotate(cyl.rotate[0],value,0);
+        cyl.setRotate(cyl.rotate[0],value,cyl.rotate[2]);
     }
     if(z_bool){
         cyl.setRotate(cyl.rotate[0],cyl.rotate[1],value);
