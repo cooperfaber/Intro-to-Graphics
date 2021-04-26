@@ -112,7 +112,11 @@ class Vector3 {
     static cross(other1, other2) {
         // Insert your code here.
         // This function should create and return a new vector.
-        let v3 = new Vector3(); // Modify this line to calculate cross product between other1 and other2.
+        let v3 = new Vector3([
+          other1.elements[1]*other2.elements[2] - other1.elements[2]*other2.elements[1],
+          other1.elements[2]*other2.elements[0] - other1.elements[0]*other2.elements[2],
+          other1.elements[0]*other2.elements[1] - other1.elements[1]*other2.elements[0]
+        ]); // Modify this line to calculate cross product between other1 and other2.
 
         // Don't delete the return statement.
         return v3;
@@ -122,25 +126,28 @@ class Vector3 {
       * Calculate the magnitude (or length) of this vector.
       * @return scalar
       */
-    magnitude() {
-        // Insert your code here.
-        let m = 0; // Modify this line to calculate this vector's magnitude.
+     magnitude() {
+      // Insert your code here.
+      let m = Math.sqrt((this.elements[0]*this.elements[0]) + (this.elements[1]*this.elements[1]) + (this.elements[2]*this.elements[2])); // Modify this line to calculate this vector's magnitude.
 
-        // Don't delete the return statement.
-        return m;
-    };
+      // Don't delete the return statement.
+      return m;
+  };
 
     /**
       * Normalize this vector.
       * @return this
       */
-    normalize() {
-        // Insert your code here.
-        // This function should change this vector (this.elements) and not create a new vector.
-
-        // Don't delete the return statement.
-        return this;
-    };
+     normalize() {
+      // Insert your code here.
+      // This function should change this vector (this.elements) and not create a new vector.
+      let m = this.magnitude()
+      this.elements[0] = this.elements[0]/m;
+      this.elements[1] = this.elements[1]/m;
+      this.elements[2] = this.elements[2]/m;
+      // Don't delete the return statement.
+      return this;
+  };
 }
 
 class Vector4 {

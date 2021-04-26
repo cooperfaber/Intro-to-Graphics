@@ -125,7 +125,7 @@ class Cylinder {
         // |-------|
         // c-------d
         //let V_a=bx-ax,by-ay,bz-aZ;V_B=cx-bx,cy-by,cz-bz
-        //normal to all verts on face (4) is V_a (CROSS) V_b
+        //normal to all verts on face (4) is V_b (CROSS) V_a
 
         //Do all faces
         //n iterations, n faces
@@ -133,9 +133,49 @@ class Cylinder {
             //need to set V_a, V_b
             //x0, y0, z0 are v[0,1,2]
             //x1, y1, z0 are v[3,4,5]
-            
+            let V_a = new Vector3([this.verticies[12*i+0],this.verticies[12*i+1],this.verticies[12*i+2]]);
+            let V_b = new Vector3([this.verticies[12*i+3],this.verticies[12*i+4],this.verticies[12*i+5]]);
             //v[6-11] have same x,y, so iterate past for next face
+            let V_c = Vector3.cross(V_b,V_a);
+            //each vertex on face has same normal, so v[0-2]=v[3-5]=v[6-8]=v[9-11]
+            //normalize before assignment, to keep all normals as unit vectors
+            V_c.normalize();
+            this.normals[12*i] = V_c.elements[0];
+            this.normals[12*i+1] = V_c.elements[1];
+            this.normals[12*i+2] = V_c.elements[2];
+            this.normals[12*i+3] = V_c.elements[0];
+            this.normals[12*i+4] = V_c.elements[1];
+            this.normals[12*i+5] = V_c.elements[2];
+            this.normals[12*i+6] = V_c.elements[0];
+            this.normals[12*i+7] = V_c.elements[1];
+            this.normals[12*i+8] = V_c.elements[2];
+            this.normals[12*i+9] = V_c.elements[0];
+            this.normals[12*i+10] = V_c.elements[1];
+            this.normals[12*i+11] = V_c.elements[2];
         }
+
+        //top
+        //since top is x-y plane, normal should just be (0,0,1)
+        //n verts on top, plus 1 for center
+        //top verts start at 12n of vert array
+        //now set 3*n of normal array to above normal
+        //at 12n normals at start, fills to 15n+3
+        for(let i = 0; i < n+1; i++){
+            this.normals[3*i+12*n] = 0;
+            this.normals[3*i+12*n+1] = 0;
+            this.normals[3*i+12*n+2] = 1;
+        }
+
+        //bottom
+        //same as top, except normal is (0,0,-1)
+        //at 15n+3 to start, fills to 18n+6
+        for(let i = 0; i < n+1; i++){
+            this.normals[3*i+15*n+3] = 0;
+            this.normals[3*i+15*n+4] = 0;
+            this.normals[3*i+15*n+5] = -1;
+        }
+
+        console.log(this.normals);
         //VAR SET
         this.color = color;
         this.translate = [0.0, 0.0, 0.0];
