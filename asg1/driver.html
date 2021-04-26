@@ -1,0 +1,96 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>ASG 1</title>
+
+        <!-- Load external libs-->
+        <script src="lib/cuon-matrix-cse160.js"></script>
+        <script src="lib/cuon-utils.js"></script>
+        <script src="lib/webgl-debug.js"></script>
+        <script src="lib/webgl-utils.js"></script>
+
+        <!-- Load main-->
+        <script src="asg1.js"></script>
+    </head>
+
+    <body onload="main()">
+        <canvas id="cvs1" width="400" height="400"></canvas>
+
+        <br></br>
+
+        <!-- Read n-->
+        <label for="n_in">n=</label>
+        <input id="n_in" type="number"></input>
+
+        <!-- Read endcaps bool-->
+        <label for="end_bool">End Caps:</label>
+        <select name="end_bool" id="end_bool">
+            <option value = "end_true">True</option>
+            <option value = "end_false">False</option>
+        </select>
+
+        <!-- Interaction Buttons-->
+        <input type="button" value="Draw" onclick="handleDrawEvent()" value="Draw"></input>
+        <br></br>
+        <input type="button" value="Coordinate File" onclick="coorSave()" value="Coordinate File"></input>
+        <input type="button" value="Poly File" onclick="polySave()" value="Poly File"></input>    
+    
+    </body>
+    <script>
+        //coordinate saving
+        let coorSave = () => {
+            let n = document.getElementById("n_in").value;
+            var data = 2*n+2 + "\n";
+            //(re)create the triangle
+            //bad practice, but so are global variables?
+            tri_data = tri_creat(n);
+            //and save it to a file
+            for(let i = 0; i<2*n+2;i++){
+                data += Number(i+1) + "," + tri_data[3*i] + "," + tri_data[3*i+1] + "," + tri_data[3*i+2] +"\n";
+            }
+            const textToBLOB = new Blob([data], { type: 'text/plain' });
+            const sFileName = 'objname.coor';
+            let newLink = document.createElement("a");
+            newLink.download = sFileName;
+            if (window.webkitURL != null) {
+                newLink.href = window.webkitURL.createObjectURL(textToBLOB);
+            }
+            else {
+                newLink.href = window.URL.createObjectURL(textToBLOB);
+                newLink.style.display = "none";
+                document.body.appendChild(newLink);
+            }
+            newLink.click(); 
+        }
+        //poly saving
+        let polySave = () => {
+            let n = document.getElementById("n_in").value;
+            let endcaps = document.getElementById("end_bool").value;
+            var data = 2*n + "\n";
+            //create the indicies
+            ind_data = ind_creat(n,true);
+            //and now we can save it to a file
+            //vary loop length depending on endcaps
+            //using loop var instead of array length since polygons are printed 3 at a time
+            loopEnd = 4*n;
+            data = loopEnd + "\n";
+            for(let i = 0; i < loopEnd;i++){
+                data += "tri" + Number(i+1) + " " + Number(ind_data[3*i]) + "," + Number(ind_data[3*i+1]) + "," + Number(ind_data[3*i+2]) +"\n";
+            }
+            const textToBLOB = new Blob([data], { type: 'text/plain' });
+            const sFileName = 'objname.poly';	
+            let newLink = document.createElement("a");
+            newLink.download = sFileName;
+            if (window.webkitURL != null) {
+                newLink.href = window.webkitURL.createObjectURL(textToBLOB);
+            }
+            else {
+                newLink.href = window.URL.createObjectURL(textToBLOB);
+                newLink.style.display = "none";
+                document.body.appendChild(newLink);
+            }
+            newLink.click(); 
+        }
+
+    </script>
+</html>

@@ -1,0 +1,106 @@
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Prog 2</title>
+    </head>
+
+    <body onload="main()">
+        <canvas id="webgl" width="350" height="350"></canvas>
+
+        <!-- Create Cylinder -->
+        <br></br>
+        <table>
+          <caption style="text-align:left">Create Cylinder:</caption>
+          <tr>
+            <td>N:</td>
+            <td><input type="number" style="width: 60px"></input></td>
+          </tr>
+          <tr>
+            <td>Color:</td>
+            <td><input type="color" style="width: 60px"></input></td>
+          </tr>
+          <tr>
+              <td><button type="button" onclick="addCylinder()">Add</button></td>
+          </tr>
+        </table>
+
+        <!-- Transform Cylinder -->
+        <br>
+        <table>
+          <caption style="text-align:left">Transform Cylinder:</caption>
+          <tr>
+            <td>
+                <select id="cylSelect" style="width: 90px">
+                    <option selected disabled>Empty</option>
+                </select>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Translate:</td>
+            <td><input type="range" min="-100" max="100" oninput="onChangeTranslate(this.value)"></input></td>
+          </tr>
+
+          <tr>
+            <td>Rotate:</td>
+            <td><input type="range" min="0" max="360" oninput="onChangeRotate(this.value)"></input></td>
+          </tr>
+
+          <tr>
+            <td>Scale:</td>
+            <td><input type="range" min="1" max="200" oninput="onChangeScale(this.value)"></input></td>
+          </tr>
+        </table>
+    </body>
+
+    <script>
+
+    let MAX_SCALE = 200;
+    let MAX_TRANSLATE = 100;
+
+    let cylinders = []
+
+    function onChangeTranslate(value) {
+        console.log(value/MAX_TRANSLATE);
+    }
+
+    function onChangeRotate(value) {
+        console.log(value);
+    }
+
+    function onChangeScale(value) {
+        console.log(value/MAX_SCALE);
+    }
+
+    function addCylinder() {
+        let cylinder = {}; // TODO: call new Cylinder()
+        cylinders.push(cylinder)
+
+        var cylOption = document.createElement("option");
+        cylOption.text = "Cylinder " + cylinders.length;
+        cylOption.value = cylinders.length;
+
+        var cylSelect = document.getElementById("cylSelect");
+        cylSelect.add(cylOption);
+        cylSelect.value = cylinders.length;
+    }
+
+    function main() {
+        // Retrieving the canvas tag from html document
+        let canvas = document.getElementById("webgl");
+
+        // Get the rendering context for 2D drawing (vs WebGL)
+        let gl = canvas.getContext("webgl");
+        if(!gl) {
+            console.log("Failed to get webgl context");
+            return -1;
+        }
+
+        // Clear screen
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+    }
+
+    </script>
+</html>
