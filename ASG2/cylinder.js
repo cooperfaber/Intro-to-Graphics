@@ -5,7 +5,7 @@ class Cylinder {
         var n = Number (n_in);
         //make repeat twice
         this.verticies = new Float32Array(18*(n)+6);
-        this.normals = new Float32Array(6*(n+1));
+        this.normals = new Float32Array(18*(n)+6);
         this.indices = new Uint16Array(12*(n));
 
         //VERTICIES
@@ -118,12 +118,32 @@ class Cylinder {
         }
         //completely filled
 
+        //NORMALS
+        //given a face:
+        // b-------a
+        // |-------|
+        // |-------|
+        // c-------d
+        //let V_a=bx-ax,by-ay,bz-aZ;V_B=cx-bx,cy-by,cz-bz
+        //normal to all verts on face (4) is V_a (CROSS) V_b
+
+        //Do all faces
+        //n iterations, n faces
+        for(let i = 0; i < n; i++){
+            //need to set V_a, V_b
+            //x0, y0, z0 are v[0,1,2]
+            //x1, y1, z0 are v[3,4,5]
+            
+            //v[6-11] have same x,y, so iterate past for next face
+        }
         //VAR SET
         this.color = color;
         this.translate = [0.0, 0.0, 0.0];
         this.rotate    = [0.0, 0.0, 0.0];
         this.scale     = [1.0, 1.0, 1.0];
     }
+
+
 
 
     //TRANSFORMATIONS
@@ -144,10 +164,9 @@ class Cylinder {
         this.translate[1] = y;
         this.translate[2] = z;
     }
-
-
 }
 
+//short helper function for iterative angle creation
 function  getAngle(x,n){
     let angle = (2*x*Math.PI)/(n)
     return angle;

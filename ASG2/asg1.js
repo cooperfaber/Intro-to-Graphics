@@ -69,7 +69,7 @@ function main(){
     canvas = document.getElementById("cvs1");
 
     //Get rendering context
-    gl = canvas.getContext("webgl");
+    gl = canvas.getContex t("webgl");
     if(!gl){
         console.log("Failed to get webgl context");
         return -1;
