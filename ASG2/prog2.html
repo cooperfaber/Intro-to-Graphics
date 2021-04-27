@@ -12,7 +12,7 @@
         <script src="cylinder.js"></script>
 
         <!-- Load main-->
-        <script src="asg1.js"></script>
+        <script src="asg2.js"></script>
     </head>
 
     <body onload="main()">
@@ -34,6 +34,14 @@
               <td><button type="button" onclick="handleDrawEvent()">Add</button></td>
           </tr>
           <tr>
+          <!-- Rounded switch -->
+          <td><label class="switch">
+            WireFrame:
+            <input type="checkbox" id = "wire">
+          </td>
+          </label>
+          </tr>
+          <tr>
             <td><button type="button" onclick="reset()">Reset</button></td>
         </tr>
         </table>
@@ -50,30 +58,32 @@
             </td>
           </tr>
           <tr>
-            <td>X:</td>
-            <td><input type="checkbox" id="x" name="x"></td>
-          </tr>
-          <tr>
-            <td>Y:</td>
-            <td><input type="checkbox" id="y" name="y"></td>
-          </tr>
-          <tr>
-            <td>Z:</td>
-            <td><input type="checkbox" id="z" name="z"></td>
-          </tr>
-          <tr>
-            <td>Translate:</td>
-            <td><input type="range" min="-100" max="100" oninput="onChangeTranslate(this.value)"></input></td>
+            <td>Translate X:</td>
+            <td><input type="range" min="-100" max="100" oninput="onChangeTranslate(this.value, 'x')"></input></td>
+            <td>Translate Y:</td>
+            <td><input type="range" min="-100" max="100" oninput="onChangeTranslate(this.value, 'y')"></input></td>
+            <td>Translate Z:</td>
+            <td><input type="range" min="-100" max="100" oninput="onChangeTranslate(this.value, 'z')"></input></td>
           </tr>
 
           <tr>
-            <td>Rotate:</td>
-            <td><input type="range" min="0" max="360" oninput="onChangeRotate(this.value)"></input></td>
+            <td>Rotate X:</td>
+            <td><input type="range" min="0" max="360" oninput="onChangeRotate(this.value, 'x')"></input></td>
+            <td>Rotate Y:</td>
+            <td><input type="range" min="0" max="360" oninput="onChangeRotate(this.value, 'y')"></input></td>
+            <td>Rotate Z:</td>
+            <td><input type="range" min="0" max="360" oninput="onChangeRotate(this.value, 'z')"></input></td>
           </tr>
 
           <tr>
-            <td>Scale:</td>
-            <td><input type="range" min="1" max="200" oninput="onChangeScale(this.value)"></input></td>
+            <td>Scale X:</td>
+            <td><input type="range" min="0" max="360" oninput="onChangeScale(this.value, 'x')"></input></td>
+            <td>Scale Y:</td>
+            <td><input type="range" min="0" max="360" oninput="onChangeScale(this.value, 'y')"></input></td>
+            <td>Scale Z:</td>
+            <td><input type="range" min="0" max="360" oninput="onChangeScale(this.value, 'z')"></input></td>
+            <td>Scale All:</td>
+            <td><input type="range" min="0" max="360" oninput="onChangeScale(this.value, 'a')"></input></td>
           </tr>
 
         </table>

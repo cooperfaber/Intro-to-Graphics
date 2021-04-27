@@ -1,12 +1,13 @@
 class Cylinder {
 
-    constructor(n_in, color) {
+    constructor(n_in, r, g, b) {
         //init statements
         var n = Number (n_in);
         //make repeat twice
         this.verticies = new Float32Array(18*(n)+6);
         this.normals = new Float32Array(18*(n)+6);
         this.indices = new Uint16Array(12*(n));
+        this.color = [];
 
         //VERTICIES
 
@@ -131,15 +132,26 @@ class Cylinder {
         //n iterations, n faces
         for(let i = 0; i < n; i++){
             //need to set V_a, V_b
-            //x0, y0, z0 are v[0,1,2]
-            //x1, y1, z0 are v[3,4,5]
-            let V_a = new Vector3([this.verticies[12*i+0],this.verticies[12*i+1],this.verticies[12*i+2]]);
-            let V_b = new Vector3([this.verticies[12*i+3],this.verticies[12*i+4],this.verticies[12*i+5]]);
+            //xa, ya, za are v[0,1,2]
+            let xa = this.verticies[12*i+0];
+            let ya = this.verticies[12*i+1];
+            let za = this.verticies[12*i+2];
+            //xb, yb, zb are v[3,4,5]
+            let xb = this.verticies[12*i+3];
+            let yb = this.verticies[12*i+4];
+            let zb = this.verticies[12*i+5]
+            //xc, yc, zc are v[6,7,8]
+            let xc = this.verticies[12*i+6];
+            let yc = this.verticies[12*i+7];
+            let zc = this.verticies[12*i+8];
+
+            let V_a = new Vector3([xb-xa,yb-ya,zb-za]);
+            let V_b = new Vector3([xc-xb,yc-yb,zc-zb]);
             //v[6-11] have same x,y, so iterate past for next face
             let V_c = Vector3.cross(V_b,V_a);
             //each vertex on face has same normal, so v[0-2]=v[3-5]=v[6-8]=v[9-11]
             //normalize before assignment, to keep all normals as unit vectors
-            V_c.normalize();
+            //V_c.normalize();
             this.normals[12*i] = V_c.elements[0];
             this.normals[12*i+1] = V_c.elements[1];
             this.normals[12*i+2] = V_c.elements[2];
@@ -175,9 +187,12 @@ class Cylinder {
             this.normals[3*i+15*n+5] = -1;
         }
 
+        console.log(this.verticies);
         console.log(this.normals);
         //VAR SET
-        this.color = color;
+        this.color[0] = r;
+        this.color[1] = g;
+        this.color[2] = b;
         this.translate = [0.0, 0.0, 0.0];
         this.rotate    = [0.0, 0.0, 0.0];
         this.scale     = [1.0, 1.0, 1.0];
