@@ -14,35 +14,37 @@ class Cylinder {
         //faces of cylinder
         for(let i = 0; i < n; i++){
             //Upper right corner of face
-            this.verticies[12*i] = Math.cos(getAngle(i,n));
-            this.verticies[12*i+1] = Math.sin(getAngle(i,n));
-            this.verticies[12*i+2] = 1;
-
             if(i == (n-1)){
-                //Upper Left corner of face, duplicate of x0,y0
-                this.verticies[12*i+3] = Math.cos(getAngle(0,n));
-                this.verticies[12*i+4] = Math.sin(getAngle(0,n));
-                this.verticies[12*i+5] = 1;
-                //Bottom Left, duplicate of x0,y0
-                this.verticies[12*i+6] = Math.cos(getAngle(0,n));
-                this.verticies[12*i+7] = Math.sin(getAngle(0,n));
-                this.verticies[12*i+8] = 0;
+                this.verticies[12*i] = Math.cos(getAngle(0,n));
+                this.verticies[12*i+1] = Math.sin(getAngle(0,n));
+                this.verticies[12*i+2] = 1;
             }
             else{
-                //Upper Left corner of face
-                this.verticies[12*i+3] = Math.cos(getAngle(i+1,n));
-                this.verticies[12*i+4] = Math.sin(getAngle(i+1,n));
-                this.verticies[12*i+5] = 1;
-
-                //Bottom Left corner of face
-                this.verticies[12*i+6] = Math.cos(getAngle(i+1,n));
-                this.verticies[12*i+7] = Math.sin(getAngle(i+1,n));
-                this.verticies[12*i+8] = 0;
+                this.verticies[12*i] = Math.cos(getAngle(i+1,n));
+                this.verticies[12*i+1] = Math.sin(getAngle(i+1,n));
+                this.verticies[12*i+2] = 1;
             }
-            //Bottom right corner of face
-            this.verticies[12*i+9] = Math.cos(getAngle(i,n));
-            this.verticies[12*i+10] = Math.sin(getAngle(i,n));
-            this.verticies[12*i+11] = 0;
+            //Upper Left corner of face
+            this.verticies[12*i+3] = Math.cos(getAngle(i,n));
+            this.verticies[12*i+4] = Math.sin(getAngle(i,n));
+            this.verticies[12*i+5] = 1;
+
+            //Bottom Left corner of face
+            this.verticies[12*i+6] = Math.cos(getAngle(i,n));
+            this.verticies[12*i+7] = Math.sin(getAngle(i,n));
+            this.verticies[12*i+8] = 0;
+
+            //Bottom Right corner of face
+            if(i == (n-1)){
+                this.verticies[12*i+9] = Math.cos(getAngle(0,n));
+                this.verticies[12*i+10] = Math.sin(getAngle(0,n));
+                this.verticies[12*i+11] = 0;
+            }
+            else{
+                this.verticies[12*i+9] = Math.cos(getAngle(i+1,n));
+                this.verticies[12*i+10] = Math.sin(getAngle(i+1,n));
+                this.verticies[12*i+11] = 0;
+            }
         }
 
         //top & bottom of shape
@@ -148,7 +150,7 @@ class Cylinder {
             let V_a = new Vector3([xb-xa,yb-ya,zb-za]);
             let V_b = new Vector3([xc-xb,yc-yb,zc-zb]);
             //v[6-11] have same x,y, so iterate past for next face
-            let V_c = Vector3.cross(V_b,V_a);
+            let V_c = Vector3.cross(V_a,V_b);
             //each vertex on face has same normal, so v[0-2]=v[3-5]=v[6-8]=v[9-11]
             //normalize before assignment, to keep all normals as unit vectors
             //V_c.normalize();

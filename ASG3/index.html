@@ -1,0 +1,75 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>ASG 3</title>
+
+        <!-- Load external libs -->
+        <script src="lib/cuon-matrix-cse160.js"></script>
+        <script src="lib/cuon-utils.js"></script>
+        <script src="lib/webgl-debug.js"></script>
+        <script src="lib/webgl-utils.js"></script>
+
+        <!-- Load internal libs -->
+        <script src="models/model.js"></script>
+        <script src="models/cube.js"></script>
+        <script src="models/cylinder.js"></script>
+        <script src="models/sphere.js"></script>
+
+        <!-- Load main -->
+        <script src="asg3.js"></script>
+    </head>
+
+    <body onload="main()">
+        <canvas id="canvas" width="400" height="400"></canvas>
+
+        <br><br>
+        <select id="cubeSelect">
+            <option selected disabled>Empty</option>
+        </select>
+
+        <br><button type="button" onclick="handleDrawEvent()">Add</button><br>
+        <br><br>
+        <input id="rotSlider" type="range" min="-180" max="180" oninput="onRotationInput(this.value)"></input>
+                <!-- Transform Cylinder -->
+                <br>
+                <table>
+                  <caption style="text-align:left">Transform Cylinder:</caption>
+                  <tr>
+                    <td>
+                        <select id="cubeSelect" style="width: 90px">
+                            <option selected disabled>Empty</option>
+                        </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Translate X:</td>
+                    <td><input type="range" min="-100" max="100" oninput="onChangeTranslate(this.value, 'x')"></input></td>
+                    <td>Translate Y:</td>
+                    <td><input type="range" min="-100" max="100" oninput="onChangeTranslate(this.value, 'y')"></input></td>
+                    <td>Translate Z:</td>
+                    <td><input type="range" min="-100" max="100" oninput="onChangeTranslate(this.value, 'z')"></input></td>
+                  </tr>
+        
+                  <tr>
+                    <td>Rotate X:</td>
+                    <td><input type="range" min="0" max="360" oninput="onChangeRotate(this.value, 'x')"></input></td>
+                    <td>Rotate Y:</td>
+                    <td><input type="range" min="0" max="360" oninput="onChangeRotate(this.value, 'y')"></input></td>
+                    <td>Rotate Z:</td>
+                    <td><input type="range" min="0" max="360" oninput="onChangeRotate(this.value, 'z')"></input></td>
+                  </tr>
+        
+                  <tr>
+                    <td>Scale X:</td>
+                    <td><input type="range" min="0" max="360" oninput="onChangeScale(this.value, 'x')"></input></td>
+                    <td>Scale Y:</td>
+                    <td><input type="range" min="0" max="360" oninput="onChangeScale(this.value, 'y')"></input></td>
+                    <td>Scale Z:</td>
+                    <td><input type="range" min="0" max="360" oninput="onChangeScale(this.value, 'z')"></input></td>
+                    <td>Scale All:</td>
+                    <td><input type="range" min="0" max="360" oninput="onChangeScale(this.value, 'a')"></input></td>
+                  </tr>
+        
+                </table>
+    </body>
+</html>

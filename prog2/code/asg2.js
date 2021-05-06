@@ -47,7 +47,7 @@ let normalMatrix = new Matrix4();
 let u_Model = null;
 let u_Color = null;
 let lightRotate = new Matrix4();
-let lightDirection = new Vector3([1.0, 1.0, -1.0]);
+let lightDirection = new Vector3([1.0, 1.0, 1.0]);
 let cylinders = [];
 
 function draw(cyl){
@@ -164,7 +164,7 @@ function handleDrawEvent(){
     }
 
     //set light data
-    gl.uniform3f(u_lightColor,1.0,0.0,1.0);
+    gl.uniform3f(u_lightColor,1.0,1.0,1.0);
     gl.uniform3fv(u_lightDirection,lightDirection.elements);
 
     for(let cyl of cylinders) {
@@ -255,7 +255,8 @@ function onChangeTranslate(value, coor){
 
 function clr(){
     //Clear: clears. call if you need to clear
-    gl.clearColor(1.0, 1.0, 1.0, 1.0);
+    let graey = 128/255;
+    gl.clearColor(graey, graey, graey, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 }
 
