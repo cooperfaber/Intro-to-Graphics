@@ -1,6 +1,6 @@
 class Sphere extends Model {
-    constructor(color, n) {
-        super(color);
+    constructor(r,g,b,n) {
+        super(r,g,b);
         
         let vertices = this.createVertices(n);
 
@@ -12,6 +12,10 @@ class Sphere extends Model {
 
         // Create Normals (note that in spheres normals are equal to positions)
         this.normals = new Float32Array(vertices);
+        this.color = [];
+        this.color[0] = r;
+        this.color[1] = g;
+        this.color[2] = b;
     }
 
     createVertices(n) {

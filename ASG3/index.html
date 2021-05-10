@@ -21,22 +21,40 @@
 
     <body onload="main()">
         <canvas id="canvas" width="400" height="400"></canvas>
-
-        <br><br>
-        <select id="cubeSelect">
-            <option selected disabled>Empty</option>
-        </select>
-
-        <br><button type="button" onclick="handleDrawEvent()">Add</button><br>
-        <br><br>
-        <input id="rotSlider" type="range" min="-180" max="180" oninput="onRotationInput(this.value)"></input>
+        <!-- Create Cylinder -->
+        <br></br>
+        <table>
+            <caption style="text-align:left">Create Model:</caption>
+            <tr>
+            <td>N:</td>
+            <td><input type="number" id="n_in" style="width: 60px"></input></td>
+            </tr>
+            <tr>
+            <td>Color:</td>
+            <td><input type="color" id="color_in" style="width: 60px"></input></td>
+            </tr>
+            <tr>
+            <!-- Rounded switch -->
+            <td><label class="switch">
+            WireFrame:
+            <input type="checkbox" id = "wire">
+            </td>
+            </label>
+            </tr>
+            <tr>
+            <tr><td><button type="button" onclick="handleDrawEvent('cyl')">Add Cylinder</button></tr></td>
+            <tr><td><button type="button" onclick="handleDrawEvent('sph')">Add Sphere</button></tr></td>
+            <td><button type="button" onclick="reset()">Reset</button></td>
+        </tr>
+        </table>
+        <br>
                 <!-- Transform Cylinder -->
                 <br>
                 <table>
                   <caption style="text-align:left">Transform Cylinder:</caption>
                   <tr>
                     <td>
-                        <select id="cubeSelect" style="width: 90px">
+                        <select id="cylSelect" style="width: 90px">
                             <option selected disabled>Empty</option>
                         </select>
                     </td>
@@ -52,11 +70,11 @@
         
                   <tr>
                     <td>Rotate X:</td>
-                    <td><input type="range" min="0" max="360" oninput="onChangeRotate(this.value, 'x')"></input></td>
+                    <td><input type="range" min="-180" max="180" oninput="onChangeRotate(this.value, 'x')"></input></td>
                     <td>Rotate Y:</td>
-                    <td><input type="range" min="0" max="360" oninput="onChangeRotate(this.value, 'y')"></input></td>
+                    <td><input type="range" min="-180" max="180" oninput="onChangeRotate(this.value, 'y')"></input></td>
                     <td>Rotate Z:</td>
-                    <td><input type="range" min="0" max="360" oninput="onChangeRotate(this.value, 'z')"></input></td>
+                    <td><input type="range" min="-180" max="180" oninput="onChangeRotate(this.value, 'z')"></input></td>
                   </tr>
         
                   <tr>

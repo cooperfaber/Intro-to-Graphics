@@ -17,8 +17,27 @@ let VSHADER=`
     uniform float u_specularAlpha;
     uniform vec3 u_lightPosition;
 
+    uniform vec3 u_lightDirection;
+
     varying vec4 v_Color;
 
+    vec3 calcAmbient(){
+        return u_ambientColor * u_Color;
+    }
+
+    vec3 calcDiffuse(vec3 l, vec3 n, vec3 lColor){
+        // Diffuse light (flat shading)
+        float nDotL = max(dot(l, n), 0.0);
+        return lColor * u_Color * nDotL; 
+    }
+
+    vec3 calcSpecular(vec3 r, vec3 v){
+        // Specular light
+        float rDotV = max(dot(r, v), 0.0);
+        float rDotVPowAlpha = pow(rDotV, u_specularAlpha);
+        return u_specularColor * u_Color * rDotVPowAlpha;
+    }
+    
     void main() {
         // Mapping obj coord system to world coord system
         vec4 worldPos = u_ModelMatrix * vec4(a_Position, 1.0);
@@ -28,17 +47,10 @@ let VSHADER=`
         vec3 v = normalize(u_eyePosition - worldPos.xyz);   // View direction
         vec3 r = reflect(l, n); // Reflected light direction
 
-        // Ambient light (flat shading)
-        vec3 ambient = u_ambientColor * u_Color;
-
-        // Diffuse light (flat shading)
-        float nDotL = max(dot(l, n), 0.0);
-        vec3 diffuse = u_diffuseColor * u_Color * nDotL;
-
-        // Specular light
-        float rDotV = max(dot(r, v), 0.0);
-        float rDotVPowAlpha = pow(rDotV, u_specularAlpha);
-        vec3 specular = u_specularColor * u_Color * rDotVPowAlpha;
+        // Smooth Shading (Goraud)
+        vec3 ambient = calcAmbient();
+        vec3 diffuse = calcDiffuse(l, n, u_diffuseColor);
+        vec3 specular = calcSpecular(r,v);
 
         // Final light color
         v_Color = vec4(ambient + diffuse + specular, 1.0);
@@ -103,7 +115,7 @@ function drawModel(model) {
 
     // Send vertices and indices from model to the shaders
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, model.verticies, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, model.vertices, gl.STATIC_DRAW);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, model.normals, gl.STATIC_DRAW);
@@ -112,19 +124,14 @@ function drawModel(model) {
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, model.indices, gl.STATIC_DRAW);
 
     // Draw model
-    gl.drawElements(gl.TRIANGLES, model.indices.length, gl.UNSIGNED_SHORT, 0);
+    if(document.getElementById("wire").checked){
+        gl.drawElements(gl.LINE_LOOP, model.indices.length, gl.UNSIGNED_SHORT, 0);
+    }
+    else{
+        gl.drawElements(gl.TRIANGLES, model.indices.length, gl.UNSIGNED_SHORT, 0);
+    }
 }
 
-function onCubeCreation() {
-    let cube2 = new Cube([0.0, 0.0, 1.0]);
-    models.push(cube2);
-
-    let newOption = document.createElement("option");
-    newOption.text = "Cube " + models.length;
-    newOption.value = models.length;
-    let cubeSelect = document.getElementById('cubeSelect');
-    cubeSelect.add(newOption);
-}
 
 function initBuffer(attibuteName, n) {
     let shaderBuffer = gl.createBuffer();
@@ -155,15 +162,19 @@ function draw() {
 
 function addModel(color, shapeType) {
     let model = null;
+    var n = Number(document.getElementById("n_in").value);
+    if(n <= 0){
+        n = 69;
+    }
     switch (shapeType) {
         case "cube":
             model = new Cube(color);
             break;
         case "cylinder":
-            model = new Cylinder(16,color[0],color[1],color[2]);
+            model = new Cylinder(n,color[0],color[1],color[2]);
             break;
         case "sphere":
-            model = new Sphere(color, 13);
+            model = new Sphere(color[0],color[1],color[2], 13);
             break;
     }
 
@@ -171,7 +182,7 @@ function addModel(color, shapeType) {
         models.push(model);
 
         // Add an option in the selector
-        let selector = document.getElementById("cubeSelect");
+        let selector = document.getElementById("cylSelect");
         let cubeOption = document.createElement("option");
         cubeOption.text = shapeType + " " + models.length;
         cubeOption.value = models.length - 1;
@@ -186,13 +197,14 @@ function addModel(color, shapeType) {
 
 function onRotationInput(value) {
     // Get the selected cube
-    let selector = document.getElementById("cubeSelect");
+    let selector = document.getElementById("cylSelect");
     let selectedCube = models[selector.value];
 
     selectedCube.setRotate(0.0, value, 0.0);
 }
 
 function main() {
+
     // Retrieving the canvas tag from html document
     canvas = document.getElementById("canvas");
 
@@ -206,8 +218,7 @@ function main() {
     // Clear screen
     gl.enable(gl.DEPTH_TEST);
 
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    clr();
 
     // Compiling both shaders and sending them to the GPU
     if(!initShaders(gl, VSHADER, FSHADER)) {
@@ -230,9 +241,14 @@ function main() {
     // cube1.setTranslate(-0.25, 0.0, 0.0);
     // cube1.setScale(0.1, 0.1, 0.1);
 
-    let sphere = addModel([1.0, 0.0, 0.0], "cylinder");
-    sphere.setTranslate(0.0, 0.0, 0.0);
-    sphere.setScale(0.75, 0.75, 0.75);
+    let sphere = addModel([1.0, 0.0, 0.0], "sphere");
+    sphere.setTranslate(0.3, -0.3, 0.0);
+    sphere.setScale(0.42, 0.42, 0.42);
+
+    let cyl = addModel([1.0, 1.0, 0.0], "cylinder");
+    cyl.setTranslate(-0.3, 0.3, 0.0);
+    cyl.setScale(0.2, 0.2, 0.2);
+    cyl.setRotate(-45,-45,0);
 
     vertexBuffer = initBuffer("a_Position", 3);
     normalBuffer = initBuffer("a_Normal", 3);
@@ -257,68 +273,102 @@ function main() {
 }
 
 function onChangeRotate(value, coor){
-    let index = document.getElementById("cubeSelect").value;
-    var cyl = models[index];
+    let index = document.getElementById("cylSelect").value;
+    var mod = models[index];
     if(coor == 'x'){
-        cyl.setRotate(value,cyl.rotate[1],cyl.rotate[2]);
+        mod.setRotate(value,mod.rotate[1],mod.rotate[2]);
     }
     if(coor == 'y'){
-        cyl.setRotate(cyl.rotate[0],value,cyl.rotate[2]);
+        mod.setRotate(mod.rotate[0],value,mod.rotate[2]);
     }
     if(coor == 'z'){
-        cyl.setRotate(cyl.rotate[0],cyl.rotate[1],value);
+        mod.setRotate(mod.rotate[0],mod.rotate[1],value);
     }
     clr();
-    for(let cyl of cylinders) {
-        draw(cyl);
+    for(let mod of models) {
+        draw(mod);
     }
 }
 
 function onChangeScale(value, coor){
-    let index = document.getElementById("cubeSelect").value;
+    let index = document.getElementById("cylSelect").value;
     let v = value/100;
     //as z is the viewpoint, it is left out of translations
-    var cyl = models[index];
+    var mod = models[index];
     if(coor == 'x'){
-        cyl.setScale(v,cyl.scale[1],cyl.scale[2]);
+        mod.setScale(v,mod.scale[1],mod.scale[2]);
     }
     if(coor == 'y'){
-        cyl.setScale(cyl.scale[0],v,cyl.scale[2]);
+        mod.setScale(mod.scale[0],v,mod.scale[2]);
     }
     if(coor == 'z'){
-        cyl.setScale(cyl.scale[0],cyl.scale[1],v);
+        mod.setScale(mod.scale[0],mod.scale[1],v);
     }
     //special for convience
     if (coor == 'a'){
-        cyl.setScale(v,v,v);
+        mod.setScale(v,v,v);
     }
     clr();
-    for(let cyl of cylinders) {
-        draw(cyl);
+    for(let mod of models) {
+        draw(mod);
     }
 }
 
 
 function onChangeTranslate(value, coor){
-    let index = document.getElementById("cubeSelect").value;
+    let index = document.getElementById("cylSelect").value;
     let v = value/100;
     //as z is the viewpoint, it is left out of translations
-    var cyl = models[index];
+    var mod = models[index];
     if(coor == 'x'){
-        cyl.setTranslate(v,cyl.translate[1],cyl.translate[2]);
+        mod.setTranslate(v,mod.translate[1],mod.translate[2]);
     }
     if(coor == 'y'){
-        cyl.setTranslate(cyl.translate[0],v,cyl.translate[2]);
+        mod.setTranslate(mod.translate[0],v,mod.translate[2]);
     }
     if(coor == 'z'){
-        cyl.setTranslate(cyl.translate[0],cyl.translate[1],v);
+        mod.setTranslate(mod.translate[0],mod.translate[1],v);
     }
     clr();
-    for(let cyl of cylinders) {
-        draw(cyl);
+    for(let mod of models) {
+        draw(mod);
     }
 }
 
-function handleDrawEvent(){
-    let cyl = addModel([0.1, 0.25, 0.75], "cylinder")
+function handleDrawEvent(type){
+    let col = (document.getElementById("color_in").value);
+    console.log(col.substring(1,3));
+    let r_str = "0x" + col.substring(1,3);
+    r = parseInt(r_str)/255;
+    console.log(r);
+    let g_str = "0x" + col.substring(3,5);
+    g = parseInt(g_str)/255;
+    console.log(g);
+    let b_str = "0x" + col.substring(5,7);
+    b = parseInt(b_str)/255;
+    console.log(b);
+    let color = [r,g,b];
+    if(type == 'cyl'){
+        let cyl = addModel([r, g, b], "cylinder")
+    }
+    else if(type == 'sph'){
+        let sph = addModel([r,g,b], "sphere")
+    }
+}
+
+function clr(){
+    //Clear: clears. call if you need to clear
+    let graey = 128/255;
+    gl.clearColor(graey, graey, graey, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+}
+
+function reset(){
+    models = [];
+    clr();
+    var select = document.getElementById("cylSelect");
+    var length = select.options.length;
+    for (i = length-1; i >= 1; i--) {
+      select.options[i] = null;
+    }
 }

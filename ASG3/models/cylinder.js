@@ -1,10 +1,11 @@
-class Cylinder {
+class Cylinder extends Model{
 
     constructor(n_in, r, g, b) {
+        super(r,g,b);
         //init statements
         var n = Number (n_in);
         //make repeat twice
-        this.verticies = new Float32Array(18*(n)+6);
+        this.vertices = new Float32Array(18*(n)+6);
         this.normals = new Float32Array(18*(n)+6);
         this.indices = new Uint16Array(12*(n));
         this.color = [];
@@ -15,35 +16,35 @@ class Cylinder {
         for(let i = 0; i < n; i++){
             //Upper right corner of face
             if(i == (n-1)){
-                this.verticies[12*i] = Math.cos(getAngle(0,n));
-                this.verticies[12*i+1] = Math.sin(getAngle(0,n));
-                this.verticies[12*i+2] = 1;
+                this.vertices[12*i] = Math.cos(getAngle(0,n));
+                this.vertices[12*i+1] = Math.sin(getAngle(0,n));
+                this.vertices[12*i+2] = 1;
             }
             else{
-                this.verticies[12*i] = Math.cos(getAngle(i+1,n));
-                this.verticies[12*i+1] = Math.sin(getAngle(i+1,n));
-                this.verticies[12*i+2] = 1;
+                this.vertices[12*i] = Math.cos(getAngle(i+1,n));
+                this.vertices[12*i+1] = Math.sin(getAngle(i+1,n));
+                this.vertices[12*i+2] = 1;
             }
             //Upper Left corner of face
-            this.verticies[12*i+3] = Math.cos(getAngle(i,n));
-            this.verticies[12*i+4] = Math.sin(getAngle(i,n));
-            this.verticies[12*i+5] = 1;
+            this.vertices[12*i+3] = Math.cos(getAngle(i,n));
+            this.vertices[12*i+4] = Math.sin(getAngle(i,n));
+            this.vertices[12*i+5] = 1;
 
             //Bottom Left corner of face
-            this.verticies[12*i+6] = Math.cos(getAngle(i,n));
-            this.verticies[12*i+7] = Math.sin(getAngle(i,n));
-            this.verticies[12*i+8] = 0;
+            this.vertices[12*i+6] = Math.cos(getAngle(i,n));
+            this.vertices[12*i+7] = Math.sin(getAngle(i,n));
+            this.vertices[12*i+8] = 0;
 
             //Bottom Right corner of face
             if(i == (n-1)){
-                this.verticies[12*i+9] = Math.cos(getAngle(0,n));
-                this.verticies[12*i+10] = Math.sin(getAngle(0,n));
-                this.verticies[12*i+11] = 0;
+                this.vertices[12*i+9] = Math.cos(getAngle(0,n));
+                this.vertices[12*i+10] = Math.sin(getAngle(0,n));
+                this.vertices[12*i+11] = 0;
             }
             else{
-                this.verticies[12*i+9] = Math.cos(getAngle(i+1,n));
-                this.verticies[12*i+10] = Math.sin(getAngle(i+1,n));
-                this.verticies[12*i+11] = 0;
+                this.vertices[12*i+9] = Math.cos(getAngle(i+1,n));
+                this.vertices[12*i+10] = Math.sin(getAngle(i+1,n));
+                this.vertices[12*i+11] = 0;
             }
         }
 
@@ -52,27 +53,27 @@ class Cylinder {
         //loop @ 3(vertex/loop)*i(iterations)+12(current)+coor
         //top
         for(let i = 0; i < n; i++){
-            this.verticies[3*i+12*n] = Math.cos(getAngle(i,n));
-            this.verticies[3*i+12*n+1] = Math.sin(getAngle(i,n));
-            this.verticies[3*i+12*n+2] = 1;
+            this.vertices[3*i+12*n] = Math.cos(getAngle(i,n));
+            this.vertices[3*i+12*n+1] = Math.sin(getAngle(i,n));
+            this.vertices[3*i+12*n+2] = 1;
         }
         //Fills to 15(n)
         //fill top center
-        this.verticies[15*(n)] = 0.0;
-        this.verticies[15*(n)+1] = 0.0;
-        this.verticies[15*(n)+2] = 1.0;
+        this.vertices[15*(n)] = 0.0;
+        this.vertices[15*(n)+1] = 0.0;
+        this.vertices[15*(n)+2] = 1.0;
 
         //bottom
         for(let i = 0; i < n; i++){
-            this.verticies[3*i+15*n+3] = Math.cos(getAngle(i,n));
-            this.verticies[3*i+15*n+4] = Math.sin(getAngle(i,n));
-            this.verticies[3*i+15*n+5] = 0;
+            this.vertices[3*i+15*n+3] = Math.cos(getAngle(i,n));
+            this.vertices[3*i+15*n+4] = Math.sin(getAngle(i,n));
+            this.vertices[3*i+15*n+5] = 0;
         }
 
         //fill bottom center 
-        this.verticies[18*(n)+3] = 0.0;
-        this.verticies[18*(n)+4] = 0.0;
-        this.verticies[18*(n)+5] = 0.0;
+        this.vertices[18*(n)+3] = 0.0;
+        this.vertices[18*(n)+4] = 0.0;
+        this.vertices[18*(n)+5] = 0.0;
 
 
         //INDICIES
@@ -135,17 +136,17 @@ class Cylinder {
         for(let i = 0; i < n; i++){
             //need to set V_a, V_b
             //xa, ya, za are v[0,1,2]
-            let xa = this.verticies[12*i+0];
-            let ya = this.verticies[12*i+1];
-            let za = this.verticies[12*i+2];
+            let xa = this.vertices[12*i+0];
+            let ya = this.vertices[12*i+1];
+            let za = this.vertices[12*i+2];
             //xb, yb, zb are v[3,4,5]
-            let xb = this.verticies[12*i+3];
-            let yb = this.verticies[12*i+4];
-            let zb = this.verticies[12*i+5]
+            let xb = this.vertices[12*i+3];
+            let yb = this.vertices[12*i+4];
+            let zb = this.vertices[12*i+5]
             //xc, yc, zc are v[6,7,8]
-            let xc = this.verticies[12*i+6];
-            let yc = this.verticies[12*i+7];
-            let zc = this.verticies[12*i+8];
+            let xc = this.vertices[12*i+6];
+            let yc = this.vertices[12*i+7];
+            let zc = this.vertices[12*i+8];
 
             let V_a = new Vector3([xb-xa,yb-ya,zb-za]);
             let V_b = new Vector3([xc-xb,yc-yb,zc-zb]);
@@ -189,7 +190,7 @@ class Cylinder {
             this.normals[3*i+15*n+5] = -1;
         }
 
-        console.log(this.verticies);
+        console.log(this.vertices);
         console.log(this.normals);
         //VAR SET
         this.color[0] = r;
